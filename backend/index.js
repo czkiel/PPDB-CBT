@@ -19,6 +19,7 @@ import DocumentRoute from "./routes/DocumentRoute.js";
 import QuestionRoute from "./routes/QuestionRoute.js";
 import ExamRoute from "./routes/ExamRoute.js";
 import AdminRoute from "./routes/AdminRoute.js";
+import { initializeExamAutoSubmit } from "./controllers/Exams.js";
 
 dotenv.config();
 
@@ -62,7 +63,8 @@ app.use(AdminRoute);
 // })();
 
 (async () => {
-  await db.sync();
+    await db.sync();
+    await initializeExamAutoSubmit();
 })();
 
 app.get('/', (req, res) => {

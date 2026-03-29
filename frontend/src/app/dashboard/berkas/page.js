@@ -4,6 +4,74 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "@/app/lib/axios";
 import Link from "next/link";
+import { 
+  ArrowLeft, 
+  UploadCloud, 
+  FileText, 
+  CheckCircle2, 
+  AlertCircle, 
+  Eye, 
+  FileBadge, 
+  Users, 
+  Baby, 
+  ShieldAlert,
+  Loader2
+} from "lucide-react";
+
+// Reusable Document Upload Row Component to keep the code DRY
+const DocumentUploadRow = ({ title, desc, icon: Icon, docType, existingDoc, onChange, isEven }) => {
+  return (
+    <div className={`p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors duration-300 ${isEven ? 'bg-[#f4f5f0]/30' : 'bg-white'} hover:bg-[#f4f5f0]`}>
+      
+      {/* Title & Info Section */}
+      <div className="flex items-start gap-4 md:w-1/2">
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border ${existingDoc ? 'bg-[#d4edda] text-[#155724] border-[#c3e6cb]' : 'bg-[#e3e8e5] text-[#1a2e1f] border-[#d2dbd6]'}`}>
+          <Icon className="w-6 h-6" />
+        </div>
+        <div>
+          <h3 className="font-bold text-lg text-[#1a2e1f] flex flex-wrap items-center gap-2">
+            {title}
+            {existingDoc && (
+              <span className="bg-[#d4edda] text-[#155724] text-xs px-2.5 py-1 rounded-md border border-[#c3e6cb] flex items-center gap-1 shadow-sm">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan
+              </span>
+            )}
+          </h3>
+          <p className="text-sm text-[#4b5e51] mt-1.5 font-medium leading-relaxed">{desc}</p>
+          
+          {existingDoc && (
+            <a 
+              href={existingDoc.file_path} 
+              target="_blank" 
+              rel="noreferrer" 
+              className="mt-3 group inline-flex items-center gap-1.5 text-sm text-[#c49a45] hover:text-[#b0883b] font-bold transition-colors"
+            >
+              <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Lihat Dokumen
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Input Section */}
+      <div className="md:w-1/2 md:pl-8 flex justify-end">
+        <div className="relative w-full max-w-sm">
+          <input 
+            type="file" 
+            name={`file_${docType}`} 
+            onChange={onChange} 
+            accept=".jpg,.jpeg,.png,.pdf" 
+            className="block w-full text-sm text-[#4b5e51] 
+              file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 
+              file:text-sm file:font-bold file:bg-[#2b4d33] file:text-white 
+              hover:file:bg-[#1a2e1f] file:transition-all file:cursor-pointer file:shadow-md
+              border border-gray-200 rounded-2xl p-1.5 bg-white shadow-sm focus:ring-2 focus:ring-[#c49a45] outline-none transition-all" 
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function BerkasSiswa() {
   const [documents, setDocuments] = useState([]);
@@ -102,139 +170,141 @@ export default function BerkasSiswa() {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-[#e3e8e5] flex items-center justify-center"><p className="text-xl font-bold text-[#2b4d33] animate-pulse">Memuat Data Berkas...</p></div>;
+    return (
+      <div className="min-h-screen bg-[#f4f5f0] flex flex-col items-center justify-center space-y-4">
+        <div className="w-16 h-16 border-4 border-[#c49a45] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-lg font-bold text-[#2b4d33] tracking-widest uppercase animate-pulse">Memuat Berkas...</p>
+      </div>
+    );
   }
 
   const isVerified = user?.student?.verification_status === "verified";
 
   return (
-    <div className="min-h-screen bg-[#e3e8e5] text-[#1a2e1f] font-sans pb-12">
-      {/* NAVBAR SIMPLE */}
-      <nav className="bg-[#1a2e1f] text-white shadow-md">
+    <div className="min-h-screen bg-[#f4f5f0] text-[#1a2e1f] font-sans pb-16 selection:bg-[#c49a45] selection:text-white">
+      
+      {/* NAVBAR */}
+      <nav className="bg-[#1a2e1f] text-white shadow-lg sticky top-0 z-50 border-b border-[#2b4d33]/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/dashboard" className="flex items-center gap-2 text-[#a5baa9] hover:text-white transition-colors">
-              <span>← Kembali ke Dasbor</span>
+          <div className="flex justify-between h-20 items-center">
+            <Link href="/dashboard" className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl text-[#a5baa9] hover:text-white transition-all duration-300 border border-transparent hover:border-white/10">
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-sm">Kembali ke Dasbor</span>
             </Link>
-            <span className="font-bold text-[#c49a45] tracking-wide hidden sm:block">Manajemen Berkas</span>
+            <div className="flex items-center gap-3">
+              <UploadCloud className="w-6 h-6 text-[#c49a45] hidden sm:block" />
+              <span className="font-black text-lg text-white tracking-wide uppercase hidden sm:block">Manajemen Berkas</span>
+            </div>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 mt-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 mt-10 animate-in fade-in slide-in-from-bottom-8 duration-500">
         
-        <div className="mb-8">
-          <h1 className="text-3xl font-black text-[#1a2e1f] uppercase tracking-wider mb-2">Unggah Berkas Persyaratan</h1>
-          <p className="text-[#4b5e51] font-medium">Unggah dokumen dalam format JPG, PNG, atau PDF (Maksimal 5MB per dokumen).</p>
+        {/* HEADER AREA */}
+        <div className="mb-10 text-center sm:text-left bg-white p-8 rounded-3xl shadow-sm border border-[#e3e8e5]">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-[#eef2ef] rounded-2xl mb-6 text-[#2b4d33] sm:hidden mx-auto">
+            <FileText className="w-8 h-8" />
+          </div>
+          <h1 className="text-3xl md:text-4xl font-black text-[#1a2e1f] uppercase tracking-tight mb-3">
+            Unggah <span className="text-[#c49a45]">Berkas</span>
+          </h1>
+          <p className="text-[#4b5e51] font-medium text-lg">
+            Unggah dokumen persyaratan legal dalam format <span className="font-bold text-[#1a2e1f]">JPG, PNG, atau PDF</span>. Maksimal ukuran file adalah <span className="font-bold text-[#1a2e1f]">5MB</span> per dokumen.
+          </p>
         </div>
 
-        {/* PESAN NOTIFIKASI */}
+        {/* ALERTS / NOTIFICATIONS */}
         {msg.text && (
-          <div className={`p-4 mb-6 rounded-xl font-bold border ${msg.type === 'success' ? 'bg-[#d4edda] text-[#155724] border-[#c3e6cb]' : 'bg-[#f8d7da] text-[#721c24] border-[#f5c6cb]'}`}>
-            {msg.text}
+          <div className={`p-4 mb-8 rounded-2xl font-bold flex items-center gap-3 shadow-sm border-2 animate-in slide-in-from-top-4 ${msg.type === 'success' ? 'bg-[#d4edda] text-[#155724] border-[#c3e6cb]' : 'bg-[#f8d7da] text-[#721c24] border-[#f5c6cb]'}`}>
+            {msg.type === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+            <span className="flex-1">{msg.text}</span>
           </div>
         )}
 
         {isVerified && (
-          <div className="mb-6 p-4 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-xl text-sm font-bold">
-            ⚠️ Berkas Anda telah diverifikasi. Anda tidak perlu mengunggah ulang dokumen kecuali diminta oleh panitia.
+          <div className="mb-8 p-5 bg-[#fff3cd] border-2 border-[#ffeeba] text-[#856404] rounded-2xl flex items-start gap-4 shadow-sm">
+            <ShieldAlert className="w-6 h-6 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-black mb-1 uppercase tracking-wider text-sm">Status: Terverifikasi</h4>
+              <p className="font-medium text-sm leading-relaxed">
+                Berkas Anda telah diverifikasi oleh Panitia. Anda tidak perlu mengunggah ulang dokumen kecuali ada instruksi khusus.
+              </p>
+            </div>
           </div>
         )}
 
-        {/* DAFTAR DOKUMEN YANG HARUS DIUNGGAH */}
-        <form id="form-upload" onSubmit={handleUpload} className="space-y-6">
+        {/* UPLOAD FORM */}
+        <form id="form-upload" onSubmit={handleUpload} className="space-y-8">
           
-          <div className="bg-white rounded-3xl shadow-lg border-t-4 border-[#2b4d33] overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-[0_10px_40px_rgba(26,46,31,0.05)] border-t-8 border-[#2b4d33] overflow-hidden group hover:border-[#2b4d33]/80 transition-colors duration-300">
             <div className="divide-y divide-gray-100">
               
-              {/* Item 1: Ijazah */}
-              <div className="p-6 md:flex md:items-center md:justify-between">
-                <div className="mb-4 md:mb-0 md:w-1/2">
-                  <h3 className="font-bold text-lg text-[#1a2e1f] flex items-center gap-2">
-                    Ijazah SD / Sederajat
-                    {getExistingDoc('ijazah') && <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full border border-green-200">✓ Sudah Ada</span>}
-                  </h3>
-                  <p className="text-sm text-[#4b5e51] mt-1">Scan asli Ijazah atau fotokopi legalisir.</p>
-                  {getExistingDoc('ijazah') && (
-                    <a href={getExistingDoc('ijazah').file_path} target="_blank" rel="noreferrer" className="text-sm text-[#c49a45] hover:underline mt-2 inline-block font-bold">
-                      👀 Lihat File Tersimpan
-                    </a>
-                  )}
-                </div>
-                <div className="md:w-1/2 md:pl-8">
-                  <input type="file" name="file_ijazah" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="block w-full text-sm text-[#4b5e51] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#eef2ef] file:text-[#2b4d33] hover:file:bg-[#dce3de] transition-all cursor-pointer border border-gray-200 rounded-full p-1" />
-                </div>
-              </div>
+              <DocumentUploadRow 
+                title="Ijazah SD / Sederajat"
+                desc="Scan dokumen asli Ijazah atau fotokopi yang telah dilegalisir basah."
+                icon={FileBadge}
+                docType="ijazah"
+                existingDoc={getExistingDoc('ijazah')}
+                onChange={handleFileChange}
+                isEven={false}
+              />
 
-              {/* Item 2: SKL */}
-              <div className="p-6 md:flex md:items-center md:justify-between bg-gray-50">
-                <div className="mb-4 md:mb-0 md:w-1/2">
-                  <h3 className="font-bold text-lg text-[#1a2e1f] flex items-center gap-2">
-                    Surat Keterangan Lulus (SKL)
-                    {getExistingDoc('skl') && <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full border border-green-200">✓ Sudah Ada</span>}
-                  </h3>
-                  <p className="text-sm text-[#4b5e51] mt-1">Gunakan SKL jika Ijazah belum terbit.</p>
-                  {getExistingDoc('skl') && (
-                    <a href={getExistingDoc('skl').file_path} target="_blank" rel="noreferrer" className="text-sm text-[#c49a45] hover:underline mt-2 inline-block font-bold">
-                      👀 Lihat File Tersimpan
-                    </a>
-                  )}
-                </div>
-                <div className="md:w-1/2 md:pl-8">
-                  <input type="file" name="file_skl" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="block w-full text-sm text-[#4b5e51] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#eef2ef] file:text-[#2b4d33] hover:file:bg-[#dce3de] transition-all cursor-pointer border border-gray-200 rounded-full p-1" />
-                </div>
-              </div>
+              <DocumentUploadRow 
+                title="Surat Keterangan Lulus (SKL)"
+                desc="Gunakan SKL sah dari sekolah asal jika Ijazah resmi belum terbit."
+                icon={FileText}
+                docType="skl"
+                existingDoc={getExistingDoc('skl')}
+                onChange={handleFileChange}
+                isEven={true}
+              />
 
-              {/* Item 3: Kartu Keluarga */}
-              <div className="p-6 md:flex md:items-center md:justify-between">
-                <div className="mb-4 md:mb-0 md:w-1/2">
-                  <h3 className="font-bold text-lg text-[#1a2e1f] flex items-center gap-2">
-                    Kartu Keluarga (KK)
-                    {getExistingDoc('kk') && <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full border border-green-200">✓ Sudah Ada</span>}
-                  </h3>
-                  <p className="text-sm text-[#4b5e51] mt-1">Scan KK asli keluaran terbaru.</p>
-                  {getExistingDoc('kk') && (
-                    <a href={getExistingDoc('kk').file_path} target="_blank" rel="noreferrer" className="text-sm text-[#c49a45] hover:underline mt-2 inline-block font-bold">
-                      👀 Lihat File Tersimpan
-                    </a>
-                  )}
-                </div>
-                <div className="md:w-1/2 md:pl-8">
-                  <input type="file" name="file_kk" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="block w-full text-sm text-[#4b5e51] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#eef2ef] file:text-[#2b4d33] hover:file:bg-[#dce3de] transition-all cursor-pointer border border-gray-200 rounded-full p-1" />
-                </div>
-              </div>
+              <DocumentUploadRow 
+                title="Kartu Keluarga (KK)"
+                desc="Scan dokumen Kartu Keluarga asli keluaran terbaru."
+                icon={Users}
+                docType="kk"
+                existingDoc={getExistingDoc('kk')}
+                onChange={handleFileChange}
+                isEven={false}
+              />
 
-              {/* Item 4: Akta Kelahiran */}
-              <div className="p-6 md:flex md:items-center md:justify-between bg-gray-50">
-                <div className="mb-4 md:mb-0 md:w-1/2">
-                  <h3 className="font-bold text-lg text-[#1a2e1f] flex items-center gap-2">
-                    Akta Kelahiran
-                    {getExistingDoc('akte') && <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full border border-green-200">✓ Sudah Ada</span>}
-                  </h3>
-                  <p className="text-sm text-[#4b5e51] mt-1">Scan asli Akta Kelahiran calon siswa.</p>
-                  {getExistingDoc('akte') && (
-                    <a href={getExistingDoc('akte').file_path} target="_blank" rel="noreferrer" className="text-sm text-[#c49a45] hover:underline mt-2 inline-block font-bold">
-                      👀 Lihat File Tersimpan
-                    </a>
-                  )}
-                </div>
-                <div className="md:w-1/2 md:pl-8">
-                  <input type="file" name="file_akte" onChange={handleFileChange} accept=".jpg,.jpeg,.png,.pdf" className="block w-full text-sm text-[#4b5e51] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#eef2ef] file:text-[#2b4d33] hover:file:bg-[#dce3de] transition-all cursor-pointer border border-gray-200 rounded-full p-1" />
-                </div>
-              </div>
+              <DocumentUploadRow 
+                title="Akta Kelahiran"
+                desc="Scan dokumen asli Akta Kelahiran calon siswa yang sah."
+                icon={Baby}
+                docType="akte"
+                existingDoc={getExistingDoc('akte')}
+                onChange={handleFileChange}
+                isEven={true}
+              />
 
             </div>
           </div>
 
-          <div className="flex justify-end pt-4">
+          {/* ACTION BUTTON */}
+          <div className="flex justify-end pt-2 pb-10">
             <button 
               type="submit" 
               disabled={isUploading}
-              className="w-full sm:w-auto px-8 py-4 bg-[#2b4d33] hover:bg-[#1a2e1f] text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider flex items-center justify-center gap-2"
+              className="w-full sm:w-auto relative group flex items-center justify-center gap-3 px-10 py-4 lg:py-5 bg-[#c49a45] hover:bg-[#b0883b] text-[#1a2e1f] font-black rounded-2xl transition-all duration-300 shadow-[0_8px_30px_rgba(196,154,69,0.3)] hover:shadow-[0_12px_40px_rgba(196,154,69,0.5)] transform hover:-translate-y-1 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-none uppercase tracking-widest overflow-hidden"
             >
-              {isUploading ? "Mengunggah..." : "☁️ Unggah Berkas Terpilih"}
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span>Mengunggah Data...</span>
+                </>
+              ) : (
+                <>
+                  <UploadCloud className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
+                  <span>Simpan & Unggah Berkas</span>
+                </>
+              )}
             </button>
           </div>
+
         </form>
 
       </main>

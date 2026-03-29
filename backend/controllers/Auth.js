@@ -3,6 +3,30 @@ import Students from "../models/StudentModel.js";
 import Parents from "../models/ParentModel.js";
 import bcrypt from "bcrypt";
 
+const getAnnouncementState = () => {
+    const configuredDate = process.env.ANNOUNCEMENT_DATE;
+
+    if (!configuredDate) {
+        return {
+            date: null,
+            isOpen: true
+        };
+    }
+
+    const announcementDate = new Date(configuredDate);
+    if (Number.isNaN(announcementDate.getTime())) {
+        return {
+            date: configuredDate,
+            isOpen: true
+        };
+    }
+
+    return {
+        date: announcementDate.toISOString(),
+        isOpen: Date.now() >= announcementDate.getTime()
+    };
+};
+
 export const Login = async (req, res) => {
     try {
         const user = await Users.findOne({ where: { email: req.body.email } });
@@ -41,7 +65,11 @@ export const Me = async (req, res) => {
         });
         
         if(!user) return res.status(404).json({msg: "User tidak ditemukan"});
-        res.status(200).json(user);
+        const userProfile = user.toJSON();
+        res.status(200).json({
+            ...userProfile,
+            announcement: getAnnouncementState()
+        });
     } catch (error) {
         res.status(500).json({msg: error.message});
     }

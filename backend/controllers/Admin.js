@@ -1,5 +1,6 @@
 import Students from "../models/StudentModel.js";
 import Users from "../models/UserModel.js";
+import Parents from "../models/ParentModel.js";
 import Documents from "../models/DocumentModel.js";
 import { ExamSessions } from "../models/ExamModel.js";
 
@@ -8,7 +9,14 @@ export const getAllStudents = async (req, res) => {
     try {
         const students = await Students.findAll({
             include: [
-                { model: Users, attributes: ['name', 'email'] },
+                {
+                    model: Users,
+                    attributes: ['name', 'email'],
+                    include: [{
+                        model: Parents,
+                        attributes: ['parent_name', 'place_of_birth', 'date_of_birth', 'phone', 'personal_email', 'occupation', 'relationship']
+                    }]
+                },
                 { model: Documents, attributes: ['doc_type', 'file_path'] },
                 { model: ExamSessions, attributes: ['cbt_score', 'is_finished'] }
             ],
