@@ -15,6 +15,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 -- Dumping structure for table db_ppdb_cbt.documents
+DROP TABLE IF EXISTS `documents`;
 CREATE TABLE IF NOT EXISTS `documents` (
   `id` int NOT NULL AUTO_INCREMENT,
   `doc_type` enum('ijazah','skl','kk','akte') NOT NULL,
@@ -25,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `documents` (
   PRIMARY KEY (`id`),
   KEY `studentId` (`studentId`),
   CONSTRAINT `documents_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.documents: ~15 rows (approximately)
 INSERT INTO `documents` (`id`, `doc_type`, `file_path`, `studentId`, `createdAt`, `updatedAt`) VALUES
@@ -47,6 +48,7 @@ INSERT INTO `documents` (`id`, `doc_type`, `file_path`, `studentId`, `createdAt`
 	(16, 'akte', 'http://localhost:5000/documents/9_akte_1774432696573.png', 9, '2026-03-25 09:58:16', '2026-03-25 09:58:16');
 
 -- Dumping structure for table db_ppdb_cbt.exam_answers
+DROP TABLE IF EXISTS `exam_answers`;
 CREATE TABLE IF NOT EXISTS `exam_answers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `selected_option` enum('A','B','C','D') DEFAULT NULL,
@@ -60,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `exam_answers` (
   KEY `questionId` (`questionId`),
   CONSTRAINT `exam_answers_ibfk_3` FOREIGN KEY (`sessionId`) REFERENCES `exam_sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `exam_answers_ibfk_4` FOREIGN KEY (`questionId`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.exam_answers: ~28 rows (approximately)
 INSERT INTO `exam_answers` (`id`, `selected_option`, `is_correct`, `sessionId`, `questionId`, `createdAt`, `updatedAt`) VALUES
@@ -94,6 +96,7 @@ INSERT INTO `exam_answers` (`id`, `selected_option`, `is_correct`, `sessionId`, 
 	(29, 'B', 1, 7, 4, '2026-03-26 06:39:52', '2026-03-26 06:41:06');
 
 -- Dumping structure for table db_ppdb_cbt.exam_sessions
+DROP TABLE IF EXISTS `exam_sessions`;
 CREATE TABLE IF NOT EXISTS `exam_sessions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `start_time` datetime NOT NULL,
@@ -106,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `exam_sessions` (
   PRIMARY KEY (`id`),
   KEY `studentId` (`studentId`),
   CONSTRAINT `exam_sessions_ibfk_1` FOREIGN KEY (`studentId`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.exam_sessions: ~7 rows (approximately)
 INSERT INTO `exam_sessions` (`id`, `start_time`, `end_time`, `is_finished`, `cbt_score`, `studentId`, `createdAt`, `updatedAt`) VALUES
@@ -119,6 +122,7 @@ INSERT INTO `exam_sessions` (`id`, `start_time`, `end_time`, `is_finished`, `cbt
 	(7, '2026-03-26 06:39:52', '2026-03-26 07:24:52', 1, 75, 5, '2026-03-26 06:39:52', '2026-03-26 06:41:41');
 
 -- Dumping structure for table db_ppdb_cbt.parents
+DROP TABLE IF EXISTS `parents`;
 CREATE TABLE IF NOT EXISTS `parents` (
   `id` int NOT NULL AUTO_INCREMENT,
   `parent_name` varchar(255) NOT NULL,
@@ -134,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `parents` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   CONSTRAINT `parents_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.parents: ~7 rows (approximately)
 INSERT INTO `parents` (`id`, `parent_name`, `place_of_birth`, `date_of_birth`, `phone`, `personal_email`, `occupation`, `relationship`, `userId`, `createdAt`, `updatedAt`) VALUES
@@ -148,6 +152,7 @@ INSERT INTO `parents` (`id`, `parent_name`, `place_of_birth`, `date_of_birth`, `
 	(8, 'Testing', 'Surabaya', '2026-03-11', '028975421212', '', 'PNS', 'Ibu', 9, '2026-03-25 09:57:10', '2026-03-25 09:57:10');
 
 -- Dumping structure for table db_ppdb_cbt.questions
+DROP TABLE IF EXISTS `questions`;
 CREATE TABLE IF NOT EXISTS `questions` (
   `id` int NOT NULL AUTO_INCREMENT,
   `question_text` text NOT NULL,
@@ -159,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `questions` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.questions: ~4 rows (approximately)
 INSERT INTO `questions` (`id`, `question_text`, `opt_a`, `opt_b`, `opt_c`, `opt_d`, `correct_answer`, `createdAt`, `updatedAt`) VALUES
@@ -169,6 +174,7 @@ INSERT INTO `questions` (`id`, `question_text`, `opt_a`, `opt_b`, `opt_c`, `opt_
 	(4, 'Siapakah yang menemukan teori relativitas?', 'Isaac Newton', 'Albert Einstein', 'Niels Bohr', 'Marie Curie', 'B', '2026-03-11 18:41:02', '2026-03-11 18:41:02');
 
 -- Dumping structure for table db_ppdb_cbt.students
+DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
   `id` int NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) NOT NULL,
@@ -187,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `students` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   CONSTRAINT `students_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.students: ~8 rows (approximately)
 INSERT INTO `students` (`id`, `full_name`, `place_of_birth`, `date_of_birth`, `gender`, `address`, `phone`, `origin_school`, `report_score`, `verification_status`, `graduation_status`, `userId`, `createdAt`, `updatedAt`) VALUES
@@ -201,6 +207,7 @@ INSERT INTO `students` (`id`, `full_name`, `place_of_birth`, `date_of_birth`, `g
 	(9, 'calonsiswa1', 'testing', '2025-12-19', 'Laki-laki', 'Manado', '089580357412', 'Manado', 78, 'verified', 'passed', 9, '2026-03-25 09:57:10', '2026-03-26 06:36:51');
 
 -- Dumping structure for table db_ppdb_cbt.users
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `uuid` varchar(255) NOT NULL,
@@ -213,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `email_2` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_ppdb_cbt.users: ~7 rows (approximately)
 INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password`, `role`, `createdAt`, `updatedAt`) VALUES
